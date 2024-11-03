@@ -37,15 +37,15 @@ async function fetchAndDisplayDoctor() {
             console.error("Error message:", data.message);
         }
     } catch (error) {
-        console.error('Error fetching appointment records:', error);
+        console.error('Error fetching doctors:', error);
     }
 }
 
-function displayDoctors() {
+function displayDoctors(doctors) {
     const tableBody = document.getElementById("bodyDoctorsTable");
     tableBody.innerHTML = ""; // Xóa nội dung hiện có
 
-    currentDoctors.forEach(doctor => {
+    doctors.forEach(doctor => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -176,14 +176,71 @@ function filterDoctors() {
 
 function searchDoctors() {
     const searchValue = document.querySelector("#doctor_search input").value.trim();
-    currentDoctors = allDoctors.filter(doctor => 
-        doctor.first_name?.toLowerCase().includes(searchValue.toLowerCase()) || 
+    currentDoctors = allDoctors.filter(doctor =>
+        doctor.first_name?.toLowerCase().includes(searchValue.toLowerCase()) ||
         doctor.last_name?.toLowerCase().includes(searchValue.toLowerCase()) ||
         doctor.account?.email?.toLowerCase().includes(searchValue.toLowerCase())
     );
     updateDisplay();
 }
 
+function openModal() {
+    const modal = new bootstrap.Modal(document.getElementById('doctorModal'));
+    modal.show();
+}
+
+function addDoctor() {
+    const email = document.getElementById("doctorEmailInput").value.trim();
+    const password = document.getElementById("doctorPasswordInput").value.trim();
+    const username = document.getElementById("doctorUsernameInput").value.trim();
+    const role = 'DOCTOR';
+
+    // Validate input fields
+    if (!email || !password || !username) {
+        alert("Vui lòng nhập đầy đủ thông tin");
+        return;
+    }
+
+    handleAddDoctor(email, password, username, role);
+
+    // Close the modal after successful submission
+    const modal = bootstrap.Modal.getInstance(document.getElementById('doctorModal'));
+    modal.hide();
+
+    
+    
+}
+
+function handleAddDoctor(email, password, username, role) {
+    // Make the fetch request to register the doctor
+    fetch(`${host}/auth/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password, username, role })
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Something went wrong');
+    })
+    .then(data => {
+        if (data.code === 200) {
+            alert("Thêm bác sĩ thành công");
+            fetchAndDisplayDoctor();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 document.getElementById("ratingFilter").addEventListener('change', filterDoctors);
 document.addEventListener('DOMContentLoaded', fetchAndDisplayDoctor);
 document.querySelector("#doctor_search input").addEventListener('input', searchDoctors);
+document.getElementById("addDoctorBtn").addEventListener('click', openModal);
+document.getElementById("createDoctorBtn").addEventListener('click', addDoctor);

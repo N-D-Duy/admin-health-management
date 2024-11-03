@@ -188,6 +188,34 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top" style="display: none"><i class="fas fa-angle-up"></i></a>
     </div>
+    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="articleModalLabel">Edit Article</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="articleForm">
+                <div class="mb-3">
+                  <label for="articleTitleInput" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="articleTitleInput" required>
+                </div>
+                <div class="mb-3">
+                  <label for="articleContentInput" class="form-label">Content</label>
+                  <textarea class="form-control" id="articleContentInput" rows="3" required></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="updateArticle()" id="updateArticleBtn">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
 
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>

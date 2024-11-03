@@ -2,12 +2,14 @@ import { host } from './constant.js';
 
 let allArticles = [];
 let currentArticles = [];
+let currentArticle = null;
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
+let fixedToken = localStorage.getItem("refresh_token");
+let userId = localStorage.getItem("userId");
 
 // Fetch and display articles
 async function fetchAndDisplayArticles() {
-    const fixedToken = localStorage.getItem("refresh_token");
     if (!fixedToken) {
         alert('Vui lòng đăng nhập để xem trang này.');
         window.location.href = 'login.html';
@@ -77,7 +79,68 @@ function displayArticles(articles) {
             <td id="articleCategory">${article.category || 'N/A'}</td>
             <td id="articleVote">${article.votes ? article.votes.length : 0}</td>
         `;
+        row.addEventListener("click", () => {
+            openBootstrapModal(article);
+        });
         tableBody.appendChild(row);
+    });
+}
+
+function openBootstrapModal(article) {
+    currentArticle = article; // Gán article hiện tại
+    document.getElementById("articleTitleInput").value = article.title || "";
+    document.getElementById("articleContentInput").value = article.content || "";
+
+    const modal = new bootstrap.Modal(document.getElementById('articleModal'));
+    modal.show();
+}
+
+function updateArticle() {
+    // Lấy dữ liệu từ input
+    const updatedTitle = document.getElementById("articleTitleInput").value;
+    const updatedContent = document.getElementById("articleContentInput").value;
+
+    // Cập nhật article với dữ liệu mới
+    if (currentArticle) {
+        currentArticle.title = updatedTitle;
+        currentArticle.content = updatedContent;
+        
+        // Gọi hàm cập nhật hiển thị hoặc gửi dữ liệu lên server nếu cần
+        handleUpdateArticle(currentArticle);
+
+        // Đóng modal sau khi cập nhật
+        const modal = bootstrap.Modal.getInstance(document.getElementById('articleModal'));
+        modal.hide();
+    }
+}
+
+function handleUpdateArticle(article) {
+    // Gửi dữ liệu lên server
+    fetch(`${host}/health-articles/update?userId=${userId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${fixedToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(article)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Update article response:', data);
+        if (data.code === 200) {
+            // Cập nhật lại dữ liệu hiển thị
+            const index = allArticles.findIndex(a => a.id === article.id);
+            if (index !== -1) {
+                allArticles[index] = article;
+                currentArticles = allArticles;
+                updateDisplay();
+            }
+        } else {
+            console.error("Error message:", data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating article:', error);
     });
 }
 
@@ -186,4 +249,4 @@ function updateDisplay() {
 document.addEventListener('DOMContentLoaded', fetchAndDisplayArticles);
 document.getElementById("categoryFilter").addEventListener("change", categoryFilter);
 document.getElementById("article_search").addEventListener("input", searchArticle);
-
+document.getElementById("updateArticleBtn").addEventListener("click", updateArticle);
