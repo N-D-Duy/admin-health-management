@@ -3,6 +3,7 @@ import { host } from './constant.js';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
 let appointments = [];
+let currentAppointments = [];
 
 async function fetchAndDisplayAppointments() {
     const token = localStorage.getItem("refresh_token");
@@ -28,6 +29,7 @@ async function fetchAndDisplayAppointments() {
         if (data.code === 200) {
             appointments = data.data;
             appointments.sort((a, b) => a.id - b.id);
+            currentAppointments = appointments;
             updateDisplay();
         } else {
             console.error("Error message:", data.message);
@@ -57,7 +59,7 @@ function displayAppointments(appointments) {
 
 // Update pagination controls
 function updatePagination() {
-    const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(currentAppointments.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('appointmentPagination');
     
     pagination.innerHTML = '';
@@ -151,7 +153,7 @@ function changePage(newPage) {
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const pageAppointment = appointments.slice(startIndex, endIndex);
+    const pageAppointment = currentAppointments.slice(startIndex, endIndex);
     
     displayAppointments(pageAppointment);
     updatePagination();
@@ -160,18 +162,28 @@ function updateDisplay() {
 // Function to filter table rows based on selected status
 function filterTableByStatus() {
     const filterValue = document.getElementById("statusFilter").value;
-    const tableRows = document.querySelectorAll("#tableBody tr");
+    if(filterValue === "ALL") {
+        currentAppointments = appointments;
+    } else{
+        currentAppointments = appointments.filter(appointment => appointment.status === filterValue);
+    }
+    updateDisplay();
+}
 
-    tableRows.forEach(row => {
-        const statusCell = row.cells[5].textContent || row.cells[5].innerText;
-
-        // Show row if status matches selected value
-        if (statusCell === filterValue) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
+function appointmentSearch(){
+    const searchValue = document.querySelector("#appointment_search input").value.toLowerCase().trim();
+    console.log(searchValue);
+    currentAppointments = appointments.filter(appointment => {
+        return appointment.id.toString().includes(searchValue) ||
+            appointment.doctor.first_name?.toLowerCase().includes(searchValue) ||
+            appointment.doctor.last_name?.toLowerCase().includes(searchValue) ||
+            appointment.user.first_name?.toLowerCase().includes(searchValue) ||
+            appointment.user.last_name?.toLowerCase().includes(searchValue) ||
+            appointment.health_provider?.name?.toLowerCase().includes(searchValue) ||
+            appointment.appointment_type?.toLowerCase().includes(searchValue) ||
+            appointment.status?.toLowerCase().includes(searchValue);
     });
+    updateDisplay();
 }
 
 // Add event listener to select element to filter table when value changes
@@ -179,6 +191,9 @@ document.getElementById("statusFilter").addEventListener("change", filterTableBy
 
 // Initial filter to display only selected status on page load
 document.addEventListener('DOMContentLoaded', filterTableByStatus);
+
+// Add event listener to search input to filter table when value changes
+document.querySelector("#appointment_search input").addEventListener("input", appointmentSearch);
 
 
 document.addEventListener('DOMContentLoaded', fetchAndDisplayAppointments);

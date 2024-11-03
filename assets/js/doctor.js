@@ -1,5 +1,6 @@
 import { host } from './constant.js';
-let allDoctors = []; // Biến lưu trữ tất cả bác sĩ
+let allDoctors = [];
+let currentDoctors = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
 async function fetchAndDisplayDoctor() {
@@ -29,8 +30,8 @@ async function fetchAndDisplayDoctor() {
 
         if (data.code === 200) {
             allDoctors = data.data;
-            //sort by id
             allDoctors.sort((a, b) => a.id - b.id);
+            currentDoctors = allDoctors;
             updateDisplay();
         } else {
             console.error("Error message:", data.message);
@@ -40,12 +41,11 @@ async function fetchAndDisplayDoctor() {
     }
 }
 
-function displayDoctors(doctors) {
-    console.log("displayDoctors called with doctors:", doctors);
+function displayDoctors() {
     const tableBody = document.getElementById("bodyDoctorsTable");
     tableBody.innerHTML = ""; // Xóa nội dung hiện có
 
-    doctors.forEach(doctor => {
+    currentDoctors.forEach(doctor => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -63,11 +63,11 @@ function displayDoctors(doctors) {
 
 // Update pagination controls
 function updatePagination() {
-    const totalPages = Math.ceil(allDoctors.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(currentDoctors.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('doctorPagination');
-    
+
     pagination.innerHTML = '';
-    
+
 
     // Previous button
     const prevButton = document.createElement('li');
@@ -157,22 +157,33 @@ function changePage(newPage) {
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const pageDoctors = allDoctors.slice(startIndex, endIndex);
-    
-    displayArticles(pageDoctors);
+    const pageDoctors = currentDoctors.slice(startIndex, endIndex);
+
+    displayDoctors(pageDoctors);
     updatePagination();
 }
 
 
 function filterDoctors() {
-    console.log("filterDoctors called");
     const ratingFilter = document.getElementById("ratingFilter").value;
-    const filteredDoctors = ratingFilter
-        ? allDoctors.filter(doctor => doctor.doctor_profile.rating >= ratingFilter)
-        : allDoctors;
+    if (ratingFilter === "ALL") {
+        currentDoctors = allDoctors;
+    } else {
+        currentDoctors = allDoctors.filter(doctor => parseInt(doctor.doctor_profile?.rating) === parseInt(ratingFilter));
+    }
+    updateDisplay();
+}
 
-    displayDoctors(filteredDoctors);
+function searchDoctors() {
+    const searchValue = document.querySelector("#doctor_search input").value.trim();
+    currentDoctors = allDoctors.filter(doctor => 
+        doctor.first_name?.toLowerCase().includes(searchValue.toLowerCase()) || 
+        doctor.last_name?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        doctor.account?.email?.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    updateDisplay();
 }
 
 document.getElementById("ratingFilter").addEventListener('change', filterDoctors);
 document.addEventListener('DOMContentLoaded', fetchAndDisplayDoctor);
+document.querySelector("#doctor_search input").addEventListener('input', searchDoctors);

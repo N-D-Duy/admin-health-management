@@ -1,5 +1,6 @@
 import { host } from './constant.js';
-let allPatients = []; // Biến lưu trữ tất cả bệnh nhân
+let allPatients = [];
+let currentPatients = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
 
@@ -27,9 +28,10 @@ async function fetchAndDisplayPatients() {
         console.log("Data từ API:", data);
 
         if (data.code === 200) {
-            allPatients = data.data; 
+            allPatients = data.data;
             //sort by id
             allPatients.sort((a, b) => a.id - b.id);
+            currentPatients = allPatients;
             updateDisplay();
         } else {
             console.error("Error message:", data.message);
@@ -43,7 +45,7 @@ function displayPatients(patients) {
     const tableBody = document.getElementById("bodyPatientsTable");
     tableBody.innerHTML = ""; // Xóa nội dung hiện có
 
-    patients.forEach(patient => {
+    currentPatients.forEach(patient => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
@@ -60,11 +62,11 @@ function displayPatients(patients) {
 
 // Update pagination controls
 function updatePagination() {
-    const totalPages = Math.ceil(allPatients.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(currentPatients.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('patientPagination');
-    
+
     pagination.innerHTML = '';
-    
+
 
     // Previous button
     const prevButton = document.createElement('li');
@@ -154,10 +156,19 @@ function changePage(newPage) {
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const pagePatients = allPatients.slice(startIndex, endIndex);
-    
+    const pagePatients = currentPatients.slice(startIndex, endIndex);
+
     displayPatients(pagePatients);
     updatePagination();
 }
 
+function searchPatient() {
+    const searchValue = document.querySelector("#patient_search input").value.toLowerCase().trim();
+    console.log("Search value:", searchValue);
+    currentPatients = allPatients.filter(patient => {
+        return patient.first_name?.toLowerCase().includes(searchValue) || patient.last_name?.toLowerCase().includes(searchValue) || patient.account.email.toLowerCase().includes(searchValue);
+    });
+    updateDisplay();
+}
 document.addEventListener('DOMContentLoaded', fetchAndDisplayPatients);
+document.querySelector("#patient_search input").addEventListener('input', searchPatient);

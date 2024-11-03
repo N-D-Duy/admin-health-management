@@ -1,6 +1,7 @@
 import { host } from './constant.js';
 
 let allArticles = [];
+let currentArticles = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
 
@@ -30,6 +31,7 @@ async function fetchAndDisplayArticles() {
         
         if (data.code === 200) {
             allArticles = data.data.sort((a, b) => a.id - b.id);
+            currentArticles = allArticles;
             updateDisplay();
         } else {
             console.error("Error message:", data.message);
@@ -37,6 +39,27 @@ async function fetchAndDisplayArticles() {
     } catch (error) {
         console.error('Error fetching articles:', error);
     }
+}
+
+function searchArticle() {
+    const searchValue = document.querySelector("#article_search input").value.trim();
+    console.log("Search value:", searchValue);
+    currentArticles = allArticles.filter(article => {
+        return article.title?.toLowerCase().includes(searchValue.toLowerCase()) || 
+               article.content?.toLowerCase().includes(searchValue.toLowerCase());
+    });
+    updateDisplay();
+}
+
+function categoryFilter() {
+    const category = document.getElementById("categoryFilter").value;
+    console.log("Category filter:", category);
+    if (category === "ALL") {
+        currentArticles = allArticles;
+    } else {
+        currentArticles = allArticles.filter(article => article.category === category);
+    }
+    updateDisplay();
 }
 
 // Display articles for current page
@@ -59,8 +82,8 @@ function displayArticles(articles) {
 }
 
 // Update pagination controls
-function updatePagination() {
-    const totalPages = Math.ceil(allArticles.length / ITEMS_PER_PAGE);
+function updatePagination(articles) {
+    const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('pagination');
     
     pagination.innerHTML = '';
@@ -153,12 +176,14 @@ function changePage(newPage) {
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const pageArticles = allArticles.slice(startIndex, endIndex);
+    const pageArticles = currentArticles.slice(startIndex, endIndex);
     
     displayArticles(pageArticles);
-    updatePagination();
+    updatePagination(currentArticles);
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', fetchAndDisplayArticles);
+document.getElementById("categoryFilter").addEventListener("change", categoryFilter);
+document.getElementById("article_search").addEventListener("input", searchArticle);
 
