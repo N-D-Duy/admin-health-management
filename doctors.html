@@ -102,7 +102,8 @@
                                                 <option value="3">3</option>
                                                 <option value="4">4</option>
                                                 <option value="5">5</option>
-                                            </select>&nbsp;</label></div>
+                                            </select>&nbsp;</label>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="text-md-end dataTables_filter" id="dataTable_filter"><label
@@ -115,15 +116,15 @@
                                 <table class="table my-0" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Address</th>
-                                            <th>Rating</th>
-                                            <th>Experience</th>
-                                            <th>Specialization</th>
+                                            <th id="doctorId">ID</th>
+                                            <th id="doctorName">Name</th>
+                                            <th id="doctorAddress">Email</th>
+                                            <th id="doctorRating">Rating</th>
+                                            <th id="doctorExperience">Experience</th>
+                                            <th id="doctorSpecialization">Specialization</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tableBody">
+                                    <tbody id="bodyDoctorsTable">
                                         <tr>
                                             <td>...</td>
                                             <td>...</td>
@@ -137,7 +138,7 @@
                                         <tr>
                                             <td><strong><br><strong>ID</strong><br><br></strong></td>
                                             <td><strong><br><strong>Name</strong></br></br></strong></td>
-                                            <td><strong><br><strong>Address</strong><br><br></strong></td>
+                                            <td><strong><br><strong>Email</strong><br><br></strong></td>
                                             <td><strong><br><strong>Rating</strong><br><br></strong></td>
                                             <td><strong><br><strong>Experience</strong><br><br></strong></td>
                                             <td><strong><br><strong>Specialization</strong><br><br></strong></td>
@@ -148,14 +149,19 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <nav class="d-flex justify-content-center dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
+                                        <ul class="pagination" id="doctorPagination">
+                                            <!-- Pagination items will be generated dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Previous" href="#" onclick="changePage(currentPage - 1)">
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            <!-- Page numbers will be inserted here dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Next" href="#" onclick="changePage(currentPage + 1)">
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -171,7 +177,8 @@
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-auto">
-                                        <p class="text-muted my-2 text-center">Copyright&nbsp;© 2024 Health Management</p>
+                                        <p class="text-muted my-2 text-center">Copyright&nbsp;© 2024 Health Management
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +190,7 @@
     </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
-    <script src="assets/js/doctor.js" defer></script>
+    <script type="module" src="assets/js/doctor.js"></script>
     <script src="assets/js/theme.js"></script>
 </body>
 

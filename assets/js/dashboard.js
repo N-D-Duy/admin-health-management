@@ -3,7 +3,6 @@ import { host } from './constant.js';
 async function fetchAnalytics() {
     try {
         const fixedToken = localStorage.getItem("refresh_token");
-        print(fixedToken);
         if (!fixedToken) {
             alert('Vui lòng đăng nhập để xem trang này.');
             window.location.href = 'login.html';

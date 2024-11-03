@@ -116,17 +116,16 @@
                                 <table class="table my-0" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Address</th>
-                                            <th>Email</th>
-                                            <th>Gender</th>
-                                            <th>Status</th>
+                                            <th id="patientId">ID</th>
+                                            <th id="patientName">Name</th>
+                                            <th id="patientEmail">Email</th>
+                                            <th id="patientGender">Gender</th>
+                                            <th id="patientStatus">Status</th>
+
                                         </tr>
                                     </thead>
                                     <tbody id="bodyPatientsTable">
                                         <tr>
-                                            <td>...</td>
                                             <td>...</td>
                                             <td>...</td>
                                             <td>...</td>
@@ -138,7 +137,6 @@
                                         <tr>
                                             <td><strong><br><strong>ID</strong><br><br></strong></td>
                                             <td><strong><br><strong>Name</strong></br></br></strong></td>
-                                            <td><strong><br><strong>Address</strong><br><br></strong></td>
                                             <td><strong><br><strong>Email</strong><br><br></strong></td>
                                             <td><strong><br><strong>Gender</strong><br><br></strong></td>
                                             <td><strong><br><strong>Status</strong><br><br></strong></td>
@@ -149,14 +147,19 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <nav class="d-flex justify-content-center dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
+                                        <ul class="pagination" id="patientPagination">
+                                            <!-- Pagination items will be generated dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Previous" href="#" onclick="changePage(currentPage - 1)">
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            <!-- Page numbers will be inserted here dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Next" href="#" onclick="changePage(currentPage + 1)">
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -172,7 +175,8 @@
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-auto">
-                                        <p class="text-muted my-2 text-center">Copyright&nbsp;© 2024 Health Management</p>
+                                        <p class="text-muted my-2 text-center">Copyright&nbsp;© 2024 Health Management
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +186,7 @@
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script src="assets/js/patient.js"></script>
+    <script type="module" src="assets/js/patient.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
     <script src="assets/js/theme.js"></script>

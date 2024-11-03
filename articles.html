@@ -116,12 +116,12 @@
                                 <table class="table my-0" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Author</th>
-                                            <th>Title</th>
-                                            <th>Content</th>
-                                            <th>Category</th>
-                                            <th>Vote</th>
+                                            <th id="articleId">ID</th>
+                                            <th id="articleAuthor">Author</th>
+                                            <th id="articleTitle">Title</th>
+                                            <th id="articleContent">Content</th>
+                                            <th id="articleCategory">Category</th>
+                                            <th id="articleVote">Vote</th>
                                         </tr>
                                     </thead>
                                     <tbody id="bodyArticlesTable">
@@ -149,14 +149,19 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <nav class="d-flex justify-content-center dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
+                                        <ul class="pagination" id="pagination">
+                                            <!-- Pagination items will be generated dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Previous" href="#" onclick="changePage(currentPage - 1)">
+                                                    <span aria-hidden="true">«</span>
+                                                </a>
+                                            </li>
+                                            <!-- Page numbers will be inserted here dynamically -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link" aria-label="Next" href="#" onclick="changePage(currentPage + 1)">
+                                                    <span aria-hidden="true">»</span>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -180,20 +185,12 @@
                     </div>
                 </div>
             </footer>
-        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top" style="display: none"><i class="fas fa-angle-up"></i></a>
     </div>
-    <script>
-        $("#navbar-container").load("top_navbar.html", function (response, status, xhr) {
-            if (status == "success") {
-                console.log("Navbar loaded successfully.");
-            } else {
-                console.log("Error loading navbar: " + xhr.status + " " + xhr.statusText);
-            }
-        });
-    </script>
+
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
-    <script src="assets/js/article.js"></script>
+    <script type="module" src="assets/js/article.js"></script>
     <script src="assets/js/theme.js"></script>
 </body>
 
