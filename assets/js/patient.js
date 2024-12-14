@@ -12,7 +12,7 @@ async function fetchAndDisplayPatients() {
     }
 
     try {
-        const response = await fetch(`${host}/users/patients`, {
+        const response = await fetch(`${host}/core/users/patients`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,

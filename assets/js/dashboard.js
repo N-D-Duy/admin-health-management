@@ -7,7 +7,7 @@ async function fetchAnalytics() {
             alert('Vui lòng đăng nhập để xem trang này.');
             window.location.href = 'login.html';
         }
-        const response = await fetch(`${host}/analytics?startDate=2024-10-01&endDate=2025-01-05`, {
+        const response = await fetch(`${host}/core/analytics?startDate=2024-10-01&endDate=2025-01-05`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,

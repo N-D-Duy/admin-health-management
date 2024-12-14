@@ -12,7 +12,7 @@ async function fetchAndDisplayAppointments() {
         window.location.href = 'login.html';
     }
     try {
-        const response = await fetch(`${host}/appointment-record/all`, {
+        const response = await fetch(`${host}/core/appointment-record/all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

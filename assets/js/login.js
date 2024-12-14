@@ -9,7 +9,7 @@ $(document).ready(function () {
         let password = document.getElementById('exampleInputPassword').value;
 
         $.ajax({
-            url: `${host}/auth/login`,
+            url: `${host}/core/auth/login`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     function checkPrivilege(access_token, refresh_token, email) {
         $.ajax({
-            url: `${host}/users/email`,
+            url: `${host}/core/users/email`,
             type: 'GET',
             headers: {
                 'Authorization': `Bearer ${access_token}`,

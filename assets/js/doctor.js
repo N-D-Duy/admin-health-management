@@ -13,7 +13,7 @@ async function fetchAndDisplayDoctor() {
     }
 
     try {
-        const response = await fetch(`${host}/users/doctors`, {
+        const response = await fetch(`${host}/core/users/doctors`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,
@@ -213,7 +213,7 @@ function addDoctor() {
 
 function handleAddDoctor(email, password, username, role) {
     // Make the fetch request to register the doctor
-    fetch(`${host}/auth/register`, {
+    fetch(`${host}/core/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

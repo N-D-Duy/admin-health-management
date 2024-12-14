@@ -17,7 +17,7 @@ async function fetchAndDisplayArticles() {
     }
 
     try {
-        const response = await fetch(`${host}/health-articles/get-all`, {
+        const response = await fetch(`${host}/core/health-articles/get-all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,
@@ -116,7 +116,7 @@ function updateArticle() {
 
 function handleUpdateArticle(article) {
     // Gửi dữ liệu lên server
-    fetch(`${host}/health-articles/update?userId=${userId}`, {
+    fetch(`${host}/core/health-articles/update?userId=${userId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${fixedToken}`,
