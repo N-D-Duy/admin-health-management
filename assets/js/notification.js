@@ -23,7 +23,7 @@ $(document).ready(function () {
             token: ''
         };
 
-        const endpoint = `${host}/push-notification?sendTime=${encodeURIComponent(sendTime)}`;
+        const endpoint = `${host}/push-notification/schedule?sendTime=${encodeURIComponent(sendTime)}`;
         $.post(endpoint, payload, function (response) {
             alert('Notification scheduled successfully!');
         }).fail(function () {
