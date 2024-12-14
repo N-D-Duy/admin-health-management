@@ -1,4 +1,4 @@
-import {host} from './constant.js';
+import { host } from './constant.js';
 
 $(document).ready(function () {
     $('#notificationForm').on('submit', function (e) {
@@ -8,9 +8,23 @@ $(document).ready(function () {
         const scheduleTime = $('#scheduleTime').val();
         const isTest = $('#testNotification').is(':checked');
 
-        const sendTime = isTest
-            ? new Date(new Date().getTime() + 30).toISOString()
-            : new Date(new Date(scheduleTime).getTime()).toISOString();
+        const formatDate = (date) => {
+            const pad = (num) => (num < 10 ? '0' + num : num);
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        };
+
+
+        let sendTime;
+        if (isTest) {
+            sendTime = new Date(new Date().getTime() + 30 * 1000);
+        } else {
+            sendTime = new Date(scheduleTime);
+        }
+
+        sendTime.setHours(sendTime.getHours() - 7);
+        const formattedSendTime = formatDate(sendTime);
+        console.log(formattedSendTime);
+
         if (!isTest && !scheduleTime) {
             alert('Please provide a valid schedule time.');
             return;
@@ -23,11 +37,19 @@ $(document).ready(function () {
             token: ''
         };
 
-        const endpoint = `${host}/push-notification/schedule?sendTime=${encodeURIComponent(sendTime)}`;
-        $.post(endpoint, payload, function (response) {
-            alert('Notification scheduled successfully!');
-        }).fail(function () {
-            alert('Failed to schedule notification.');
+        const endpoint = `${host}/push-notification/schedule?sendTime=${encodeURIComponent(formattedSendTime)}`;
+        
+        $.ajax({
+            url: endpoint,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function (response) {
+                alert('Notification scheduled successfully!');
+            },
+            error: function () {
+                alert('Failed to schedule notification.');
+            }
         });
     });
 });
