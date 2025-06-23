@@ -1,4 +1,4 @@
-import { host } from './constant.js';
+import { HOST } from './constant.js';
 
 let allArticles = [];
 let currentArticles = [];
@@ -8,7 +8,7 @@ const ITEMS_PER_PAGE = 10;
 let fixedToken = localStorage.getItem("refresh_token");
 let userId = localStorage.getItem("userId");
 
-// Fetch and display articles
+
 async function fetchAndDisplayArticles() {
     if (!fixedToken) {
         alert('Vui lòng đăng nhập để xem trang này.');
@@ -17,7 +17,7 @@ async function fetchAndDisplayArticles() {
     }
 
     try {
-        const response = await fetch(`${host}/core/health-articles/get-all`, {
+        const response = await fetch(`${HOST}/core/articles/get-all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,
@@ -64,7 +64,7 @@ function categoryFilter() {
     updateDisplay();
 }
 
-// Display articles for current page
+
 function displayArticles(articles) {
     const tableBody = document.getElementById("bodyArticlesTable");
     tableBody.innerHTML = "";
@@ -87,7 +87,7 @@ function displayArticles(articles) {
 }
 
 function openBootstrapModal(article) {
-    currentArticle = article; // Gán article hiện tại
+    currentArticle = article; 
     document.getElementById("articleTitleInput").value = article.title || "";
     document.getElementById("articleContentInput").value = article.content || "";
 
@@ -96,27 +96,27 @@ function openBootstrapModal(article) {
 }
 
 function updateArticle() {
-    // Lấy dữ liệu từ input
+    
     const updatedTitle = document.getElementById("articleTitleInput").value;
     const updatedContent = document.getElementById("articleContentInput").value;
 
-    // Cập nhật article với dữ liệu mới
+    
     if (currentArticle) {
         currentArticle.title = updatedTitle;
         currentArticle.content = updatedContent;
         
-        // Gọi hàm cập nhật hiển thị hoặc gửi dữ liệu lên server nếu cần
+        
         handleUpdateArticle(currentArticle);
 
-        // Đóng modal sau khi cập nhật
+        
         const modal = bootstrap.Modal.getInstance(document.getElementById('articleModal'));
         modal.hide();
     }
 }
 
 function handleUpdateArticle(article) {
-    // Gửi dữ liệu lên server
-    fetch(`${host}/core/health-articles/update?userId=${userId}`, {
+    
+    fetch(`${HOST}/core/articles/update?userId=${userId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${fixedToken}`,
@@ -128,7 +128,7 @@ function handleUpdateArticle(article) {
     .then(data => {
         console.log('Update article response:', data);
         if (data.code === 200) {
-            // Cập nhật lại dữ liệu hiển thị
+            
             const index = allArticles.findIndex(a => a.id === article.id);
             if (index !== -1) {
                 allArticles[index] = article;
@@ -144,14 +144,14 @@ function handleUpdateArticle(article) {
     });
 }
 
-// Update pagination controls
+
 function updatePagination(articles) {
     const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('pagination');
     
     pagination.innerHTML = '';
 
-    // Previous button
+    
     const prevButton = document.createElement('li');
     prevButton.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
     prevButton.innerHTML = `
@@ -167,11 +167,11 @@ function updatePagination(articles) {
     }
     pagination.appendChild(prevButton);
 
-    // Page numbers
+    
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
 
-    // Always show first page
+    
     if (startPage > 1) {
         pagination.appendChild(createPageItem(1));
         if (startPage > 2) {
@@ -179,12 +179,12 @@ function updatePagination(articles) {
         }
     }
 
-    // Show current pages
+    
     for (let i = startPage; i <= endPage; i++) {
         pagination.appendChild(createPageItem(i));
     }
 
-    // Always show last page
+    
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
             pagination.appendChild(createEllipsis());
@@ -192,7 +192,7 @@ function updatePagination(articles) {
         pagination.appendChild(createPageItem(totalPages));
     }
 
-    // Next button
+    
     const nextButton = document.createElement('li');
     nextButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextButton.innerHTML = `
@@ -209,7 +209,7 @@ function updatePagination(articles) {
     pagination.appendChild(nextButton);
 }
 
-// Create a page number item
+
 function createPageItem(pageNumber) {
     const li = document.createElement('li');
     li.className = `page-item ${currentPage === pageNumber ? 'active' : ''}`;
@@ -221,7 +221,7 @@ function createPageItem(pageNumber) {
     return li;
 }
 
-// Create ellipsis item
+
 function createEllipsis() {
     const li = document.createElement('li');
     li.className = 'page-item disabled';
@@ -229,13 +229,13 @@ function createEllipsis() {
     return li;
 }
 
-// Change page
+
 function changePage(newPage) {
     currentPage = newPage;
     updateDisplay();
 }
 
-// Update display (both articles and pagination)
+
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -245,7 +245,7 @@ function updateDisplay() {
     updatePagination(currentArticles);
 }
 
-// Initialize
+
 document.addEventListener('DOMContentLoaded', fetchAndDisplayArticles);
 document.getElementById("categoryFilter").addEventListener("change", categoryFilter);
 document.getElementById("article_search").addEventListener("input", searchArticle);

@@ -1,5 +1,5 @@
-import { host } from './constant.js';
-// Hàm để gọi API và cập nhật thông tin người dùng
+import { HOST } from './constant.js';
+
 async function fetchAnalytics() {
     try {
         const fixedToken = localStorage.getItem("refresh_token");
@@ -7,7 +7,7 @@ async function fetchAnalytics() {
             alert('Vui lòng đăng nhập để xem trang này.');
             window.location.href = 'login.html';
         }
-        const response = await fetch(`${host}/core/analytics?startDate=2024-10-01&endDate=2025-01-05`, {
+        const response = await fetch(`${HOST}/core/analytics?startDate=2024-10-01&endDate=2025-01-05`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,
@@ -15,17 +15,17 @@ async function fetchAnalytics() {
             }
         });
 
-        // Kiểm tra xem phản hồi có thành công không
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Chuyển đổi phản hồi thành JSON
+        
         const data = await response.json();
 
-        // Kiểm tra mã phản hồi từ server
+        
         if (data.code === 200) {
-            // Cập nhật giá trị Total User trong card body
+            
             const totalUsers = data.data.total_users;
             const totalArticles = data.data.articles_created;
             const totalPatient = data.data.total_patients;
@@ -36,7 +36,7 @@ async function fetchAnalytics() {
             
             const totalAppointment = totalAppointmentScheduled + totalAppointmentCompleted + totalAppointmentCancelled;
             
-            // Thay đổi selector để chính xác hơn
+            
             document.querySelector('.card-body .text-dark.h5 span').textContent = totalUsers;
              const articlesCreated = data.data.articles_created;
             const articlesCountSpan = document.getElementById('articlesCount');
@@ -48,12 +48,12 @@ async function fetchAnalytics() {
             const AppointmentCount = document.getElementById('totalAppointment');
             AppointmentCount.textContent = totalAppointment;
         } else {
-            console.error(data.message); // Hiển thị thông báo lỗi
+            console.error(data.message); 
         }
     } catch (error) {
         console.error('Error fetching analytics:', error);
    } 
 }
 
-// Gọi hàm khi trang được tải
+
 window.addEventListener('load', fetchAnalytics);

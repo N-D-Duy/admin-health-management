@@ -1,15 +1,15 @@
-import { host } from './constant.js';
+import { HOST } from './constant.js';
 
 $(document).ready(function () {
     $('#loginButton').click(function (e) {
         e.preventDefault();
 
-        // Lấy giá trị email và password mỗi lần người dùng nhấn nút login
+        
         let email = document.getElementById('exampleInputEmail').value;
         let password = document.getElementById('exampleInputPassword').value;
 
         $.ajax({
-            url: `${host}/core/auth/login`,
+            url: `${HOST}/core/auth/login`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     function checkPrivilege(access_token, refresh_token, email) {
         $.ajax({
-            url: `${host}/core/users/email`,
+            url: `${HOST}/core/users/email`,
             type: 'GET',
             headers: {
                 'Authorization': `Bearer ${access_token}`,

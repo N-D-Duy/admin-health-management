@@ -1,4 +1,4 @@
-import { host } from './constant.js';
+import { HOST } from './constant.js';
 
 $(document).ready(function () {
     $('#notificationForm').on('submit', function (e) {
@@ -16,7 +16,7 @@ $(document).ready(function () {
 
         let sendTime;
         if (isTest) {
-            sendTime = new Date(new Date().getTime() + 30 * 1000);
+            sendTime = new Date(new Date().getTime() + 10 * 1000);
         } else {
             sendTime = new Date(scheduleTime);
         }
@@ -37,7 +37,7 @@ $(document).ready(function () {
             token: ''
         };
 
-        const endpoint = `${host}/push-notification/schedule?sendTime=${encodeURIComponent(formattedSendTime)}`;
+        const endpoint = `${HOST}/push-notification/schedule?sendTime=${encodeURIComponent(formattedSendTime)}`;
         
         $.ajax({
             url: endpoint,

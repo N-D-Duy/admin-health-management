@@ -1,5 +1,5 @@
-import { host } from './constant.js';
-// Hàm gọi API và hiển thị dữ liệu trong bảng
+import { HOST, APPOINTMENT_EXPORT } from './constant.js';
+
 let currentPage = 1;
 const ITEMS_PER_PAGE = 10;
 let appointments = [];
@@ -12,7 +12,7 @@ async function fetchAndDisplayAppointments() {
         window.location.href = 'login.html';
     }
     try {
-        const response = await fetch(`${host}/core/appointment-record/all`, {
+        const response = await fetch(`${HOST}/core/appointments/all`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -52,12 +52,53 @@ function displayAppointments(appointments) {
             <td id="appointmentProvider">${appointment.health_provider.name || 'N/A'}</td>
             <td id="appointmentType">${appointment.appointment_type || 'N/A'}</td>
             <td id="appointmentStatus">${appointment.status || 'N/A'}</td>
+            <td><button class="btn btn-success btn-sm export-appointment-btn" data-id="${appointment.id}"><i class="fas fa-file-export"></i> Export</button></td>
         `;
         tableBody.appendChild(row);
     });
+    
+    document.querySelectorAll('.export-appointment-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const appointmentId = this.getAttribute('data-id');
+            const token = localStorage.getItem("refresh_token");
+            if (!token) {
+                alert('Vui lòng đăng nhập để export.');
+                return;
+            }
+            
+            let lang = prompt("Chọn ngôn ngữ file export: 'vie' (Tiếng Việt) hoặc 'en' (English)", "en");
+            if (!lang || (lang !== 'vie' && lang !== 'en')) {
+                alert('Vui lòng nhập \"vie\" hoặc \"en\".');
+                return;
+            }
+            try {
+                const response = await fetch(`${APPOINTMENT_EXPORT}${appointmentId}?lang=${lang}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    alert('Export thất bại!');
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `appointment_${appointmentId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Có lỗi khi export!');
+            }
+        });
+    });
 }
 
-// Update pagination controls
+
 function updatePagination() {
     const totalPages = Math.ceil(currentAppointments.length / ITEMS_PER_PAGE);
     const pagination = document.getElementById('appointmentPagination');
@@ -65,7 +106,7 @@ function updatePagination() {
     pagination.innerHTML = '';
     
 
-    // Previous button
+    
     const prevButton = document.createElement('li');
     prevButton.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
     prevButton.innerHTML = `
@@ -81,11 +122,11 @@ function updatePagination() {
     }
     pagination.appendChild(prevButton);
 
-    // Page numbers
+    
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
 
-    // Always show first page
+    
     if (startPage > 1) {
         pagination.appendChild(createPageItem(1));
         if (startPage > 2) {
@@ -93,12 +134,12 @@ function updatePagination() {
         }
     }
 
-    // Show current pages
+    
     for (let i = startPage; i <= endPage; i++) {
         pagination.appendChild(createPageItem(i));
     }
 
-    // Always show last page
+    
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
             pagination.appendChild(createEllipsis());
@@ -106,7 +147,7 @@ function updatePagination() {
         pagination.appendChild(createPageItem(totalPages));
     }
 
-    // Next button
+    
     const nextButton = document.createElement('li');
     nextButton.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextButton.innerHTML = `
@@ -123,7 +164,7 @@ function updatePagination() {
     pagination.appendChild(nextButton);
 }
 
-// Create a page number item
+
 function createPageItem(pageNumber) {
     const li = document.createElement('li');
     li.className = `page-item ${currentPage === pageNumber ? 'active' : ''}`;
@@ -135,7 +176,7 @@ function createPageItem(pageNumber) {
     return li;
 }
 
-// Create ellipsis item
+
 function createEllipsis() {
     const li = document.createElement('li');
     li.className = 'page-item disabled';
@@ -143,13 +184,13 @@ function createEllipsis() {
     return li;
 }
 
-// Change page
+
 function changePage(newPage) {
     currentPage = newPage;
     updateDisplay();
 }
 
-// Update display (both articles and pagination)
+
 function updateDisplay() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -159,7 +200,7 @@ function updateDisplay() {
     updatePagination();
 }
 
-// Function to filter table rows based on selected status
+
 function filterTableByStatus() {
     const filterValue = document.getElementById("statusFilter").value;
     if(filterValue === "ALL") {
@@ -186,13 +227,13 @@ function appointmentSearch(){
     updateDisplay();
 }
 
-// Add event listener to select element to filter table when value changes
+
 document.getElementById("statusFilter").addEventListener("change", filterTableByStatus);
 
-// Initial filter to display only selected status on page load
+
 document.addEventListener('DOMContentLoaded', filterTableByStatus);
 
-// Add event listener to search input to filter table when value changes
+
 document.querySelector("#appointment_search input").addEventListener("input", appointmentSearch);
 
 

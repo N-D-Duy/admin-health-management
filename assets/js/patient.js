@@ -1,4 +1,4 @@
-import { host } from './constant.js';
+import { HOST } from './constant.js';
 let allPatients = [];
 let currentPatients = [];
 let currentPage = 1;
@@ -12,7 +12,7 @@ async function fetchAndDisplayPatients() {
     }
 
     try {
-        const response = await fetch(`${host}/core/users/patients`, {
+        const response = await fetch(`${HOST}/core/users/patients`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${fixedToken}`,

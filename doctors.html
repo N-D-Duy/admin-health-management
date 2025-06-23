@@ -135,6 +135,7 @@
                                             <th id="doctorRating">Rating</th>
                                             <th id="doctorExperience">Experience</th>
                                             <th id="doctorSpecialization">Specialization</th>
+                                            <th>Export</th>
                                         </tr>
                                     </thead>
                                     <tbody id="bodyDoctorsTable">
@@ -236,6 +237,34 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal chọn ngày export doctor -->
+    <div class="modal fade" id="exportDoctorModal" tabindex="-1" aria-labelledby="exportDoctorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exportDoctorModalLabel">Export Doctor Schedule</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="exportDoctorForm">
+              <div class="mb-3">
+                <label for="exportStartDate" class="form-label">Start Date <span style="color:red">*</span></label>
+                <input type="date" class="form-control" id="exportStartDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="exportEndDate" class="form-label">End Date (optional)</label>
+                <input type="date" class="form-control" id="exportEndDate">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="exportDoctorSubmitBtn">Export</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
